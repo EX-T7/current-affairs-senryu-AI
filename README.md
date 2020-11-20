@@ -1,1 +1,1 @@
-# current-affairs-senryu-AI
+# 時事川柳AI
