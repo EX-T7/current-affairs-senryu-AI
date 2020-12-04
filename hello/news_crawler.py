@@ -173,17 +173,16 @@ def main():
         # 朝日新聞デジタルから記事をクローリングする
         asahi_article = executor.submit(asahi_news_crawling)
 
-    print(yahoo_article.result(), end="\n"*30)
-    print(sankei_article.result(), end="\n"*30)
-    print(asahi_article.result(), end="\n"*30)
+    print(yahoo_article.result(), end="\n")
+    print(sankei_article.result(), end="\n")
+    print(asahi_article.result(), end="\n")
 
-    # return([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
+    return([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
 
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
-    sys.exit(1)
     end_time = time.time()
     diff_time = end_time - start_time
     print("クローリング完了。")
