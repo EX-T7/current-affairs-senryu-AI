@@ -1,5 +1,4 @@
 """ 各ニュースサイトから記事をクローリングする."""
-import os
 import re
 import sys
 import time
