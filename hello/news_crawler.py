@@ -1,4 +1,5 @@
 """ 各ニュースサイトから記事をクローリングする."""
+import os
 import re
 import sys
 import time
@@ -35,28 +36,21 @@ def yahoo_news_crawling():
                 soup = BeautifulSoup(response.text, 'html.parser')
 
                 # 個別の記事の詳細へ
-                a = soup.select('.sc-dcOKER.hqjjOv')[0].get('href')
+                a = soup.select('.sc-dDojKJ.ewIfpG')[0].get('href')
                 response = requests.get(a)
                 if response.status_code == 404:
                     continue
                 soup = BeautifulSoup(response.text, 'html.parser')
-                title = soup.select('.sc-ipZHIp.lczCjB')    # たまに書式が違う記事あり
+                title = soup.select('article > header > h1')    # たまに書式が違う記事あり
                 if title == []:
-                    title = soup.select('.articleBody > div > h1')[0].text
-                    title = ' '.join(title.split())
-                    body = list(map(lambda x: x.text,
-                                [x for x in soup.select('#byline_detail_article > div > p')]))
-                    body = ''.join(body).replace('\n', '')
-
+                    pass
                 else:
                     title = title[0].text
                     title = ' '.join(title.split())
-                    body = soup.select('.sc-gqPbQI.hvfJU.yjSlinkDirectlink')[0].text
+                    body = soup.select('.article_body > div > p')[0].text
                     body = ''.join(body.split())
-                    body = re.sub(r"\n<aside.*\n", '', s)
-                    body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
 
-                article.append([title, body])
+                article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
 
                 time.sleep(3.0)     # Webサイトへ過剰に負荷をかけないため
@@ -99,7 +93,7 @@ def sankei_news_crawling():
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
 
-                article.append([title, body])
+                article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
 
                 time.sleep(3.0)
@@ -150,7 +144,7 @@ def asahi_news_crawling():
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
 
-                article.append([title, body])
+                article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
 
                 time.sleep(3.0)
@@ -163,6 +157,12 @@ def asahi_news_crawling():
     return article
 
 
+def save_article(articles):
+    with open("train_data.txt", 'w', encoding='utf-8') as f:
+        for article in articles:
+            for a in article:
+                f.write(a + '\n')
+
 def main():
     with futures.ThreadPoolExecutor(max_workers=3) as executor:
         # yahooニュースから記事をクローリングする
@@ -172,18 +172,14 @@ def main():
         # 朝日新聞デジタルから記事をクローリングする
         asahi_article = executor.submit(asahi_news_crawling)
 
-    print(yahoo_article.result(), end="\n")
-    print(sankei_article.result(), end="\n")
-    print(asahi_article.result(), end="\n")
-
+    save_article([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
     return([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
-
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
+    sys.exit(1)
     end_time = time.time()
     diff_time = end_time - start_time
     print("クローリング完了。")
     print("実行時間： {} 秒".format(diff_time))
-
