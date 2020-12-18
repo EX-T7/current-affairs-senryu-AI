@@ -148,7 +148,6 @@ def asahi_news_crawling():
                 body = re.sub(r"\n<aside.*\n", '', body)
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
                 
-
                 article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
 
@@ -179,6 +178,7 @@ def main():
 
     save_article([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
     return([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
+
 
 if __name__ == '__main__':
     start_time = time.time()
