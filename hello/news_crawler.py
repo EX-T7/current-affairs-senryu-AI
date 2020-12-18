@@ -180,7 +180,6 @@ def main():
 if __name__ == '__main__':
     start_time = time.time()
     main()
-    sys.exit(1)
     end_time = time.time()
     diff_time = end_time - start_time
     print("クローリング完了。")
