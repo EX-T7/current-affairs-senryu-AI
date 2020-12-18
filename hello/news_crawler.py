@@ -93,6 +93,7 @@ def sankei_news_crawling():
                 title = ' '.join(title.split())
                 body = soup.select('.post_content > p')
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
+                body = re.sub(r"\n<aside.*\n", '', body)
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
 
                 article.append(body)
@@ -144,8 +145,9 @@ def asahi_news_crawling():
                 else:
                     body = body[:-1]
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
+                body = re.sub(r"\n<aside.*\n", '', body)
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
-
+                
                 article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
 
@@ -176,6 +178,7 @@ def main():
 
     save_article([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
     return([yahoo_article.result(), sankei_article.result(), asahi_article.result()])
+
 
 if __name__ == '__main__':
     start_time = time.time()
