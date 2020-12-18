@@ -49,7 +49,7 @@ def yahoo_news_crawling():
                     title = ' '.join(title.split())
                     body = soup.select('.article_body > div > p')[0].text
                     body = ''.join(body.split())
-                    body = re.sub(r"\n<aside.*\n", '', s)
+                    body = re.sub(r"\n<aside.*\n", '', body)
                     body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
 
                 article.append(body)
