@@ -51,6 +51,8 @@ def yahoo_news_crawling():
                     body = ''.join(body.split())
                     body = re.sub(r"\n<aside.*\n", '', body)
                     body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
+                    body = body.replace("\n", "")
+                    body = re.sub(r"<.*-->", '', body)
 
                 article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
@@ -95,6 +97,8 @@ def sankei_news_crawling():
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
                 body = re.sub(r"\n<aside.*\n", '', body)
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
+                body = body.replace("\n", "")
+                body = re.sub(r"<.*-->", '', body)
 
                 article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
@@ -147,6 +151,8 @@ def asahi_news_crawling():
                 body = ''.join([re.sub(r'(<p>|</p>|　|)', '', str(a)) for a in body])
                 body = re.sub(r"\n<aside.*\n", '', body)
                 body = re.sub(r'\(?(<p|<a|<span).*(</p>|</a>|</span>)\)?', '', body)
+                body = body.replace("\n", "")
+                body = re.sub(r"<.*-->", '', body)
                 
                 article.append(body)
                 logging.debug("title: %s\nbody: %s\n", title, body)
